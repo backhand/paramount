@@ -9,10 +9,12 @@
   },
   "main": "./lib/paramount",
   "dependencies": {
-    
+    "annotations": "0.1.339"
   },
   "devDependencies": {
-    "mocha": "^2.3.3"
+    "lodash": "4.17.4",
+    "mocha": "2.3.3",
+    "nyc": "10.1.2"
   },
   "scripts": {
     "test": "node_modules/mocha/bin/mocha test --reporter spec test",
