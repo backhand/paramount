@@ -5,7 +5,7 @@ const assert = require('assert');
 
 describe('paramount', function() {
   describe('require', function() {
-    const testmodule = paramount.require(module, './testmodule');
+    const testmodule = paramount.require('./testmodule', module);
 
     it('should require a module file and insert proxies for exported functions', function() {
       const result = testmodule.testmethod1({

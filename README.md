@@ -1,7 +1,7 @@
-paramount
+paramount [![Build Status](https://secure.travis-ci.org/backhand/paramount.png?branch=master)](https://travis-ci.org/backhand/paramount)
 =======================
 
-[![Build Status](https://secure.travis-ci.org/backhand/paramount.png?branch=master)](https://travis-ci.org/backhand/paramount)
+Argument verification from docblock parameter definitions.
 
 Installation:
 ------------------------
@@ -9,10 +9,23 @@ npm install paramount
 
 Usage:
 ------
+Given a module :
+````
+    // myModule.js
+    /**
+     * @param {String} [str] A very important string
+     */
+    exports.somefunction = function(str) { return 'x ' + str; }
+````
 
-    require('paramount');
+Require it through paramount like this:
+````
+    const paramount = require('paramount');
+    const myModule = paramount.require('./path/to/module', module);
+    myModule.somefunction(123)
+    > Error: function somefunction - invalid argument type for str, expected String
+````
 
-    
 
 The MIT License (MIT)
 ---------------------
