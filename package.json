@@ -1,0 +1,23 @@
+{
+  "name": "paramount",
+  "description": "DESCRIPTION",
+  "version": "0.1.0",
+  "author": "Frederik Hannibal <frederik@backhand.dk>",
+   "repository": {
+    "type": "git",
+    "url": "https://github.com/backhand/paramount.git"
+  },
+  "main": "./lib/paramount",
+  "dependencies": {
+    
+  },
+  "devDependencies": {
+    "mocha": "^2.3.3"
+  },
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha test --reporter spec test",
+    "coverage": "node_modules/.bin/nyc --reporter=text --reporter=html npm test"
+  },
+  "license": "MIT",
+  "engines": { "node": ">=4.0.x" }
+}

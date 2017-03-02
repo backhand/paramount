@@ -1,0 +1,2 @@
+#!/bin/bash
+node_modules/.bin/mocha -t 25000 -s 100 --reporter spec test/paramount.test.js --grep "$1"
