@@ -25,6 +25,12 @@ describe('paramount', function() {
       }, /Module not defined/);
     });
 
+    it('should throw an error if a parameter is defined more than once', function() {
+      assert.throws(function() {
+        paramount.require('./testmodule2', module);
+      }, /Duplicate parameter definition for items/);
+    });
+
     it('should require a module file and insert proxies for exported functions', function() {
       const result = testmodule.testmethod1({
         option1: 127,
@@ -88,7 +94,35 @@ describe('paramount', function() {
     it('should not attempt validation if no docblock', function() {
       const result = testmodule.testmethod4('hejsasa');
       assert.equal(result, 'xhejsasa');
-    });    
+    });
+
+    it('should check a function parameter', function() {
+      const result = testmodule.testmethod5('hejsasa', (msg) => msg + 'x');
+      assert.equal(result, 'xhejsasax');
+
+      assert.throws(function() {
+        testmodule.testmethod5('hejsasa', 'notafunction');
+      }, /invalid argument type for callback, expected Function got notafunction/);
+    });
+
+    it('should check a deep option', function() {
+      const result = testmodule.testmethod6({ moreOptions: { evenMoreOptions: { stuff: [1,2,3], message: 'hej' } } });
+      assert.deepEqual(result, [1,2,3, 'hej']);
+
+      assert.throws(function() {
+        testmodule.testmethod6({ moreOptions: { evenMoreOptions: { stuff: 'hej', message: 123 } } });
+      }, /invalid argument type for options.moreOptions.evenMoreOptions.stuff, expected Array got hej/);
+    });
+
+    it('should use a custom validator', function() {
+      paramount.addValidator('LongString', (arg) => typeof arg === 'string' && arg.length > 10);
+      const result = testmodule.testmethod7('hejsasasasasa');
+      assert.equal(result, 13);
+
+      assert.throws(function() {
+        testmodule.testmethod7('yikes');
+      }, /invalid argument type for msg, expected LongString got yikes/);
+    });
   }); // End describe require
 
   describe('setErrorHandler', function() {
@@ -132,15 +166,16 @@ describe('paramount', function() {
           name: 'options',
           property: false,
           desc: 'All your options',
+          depth: 1,
           properties: [
-            { type: 'Number', name: 'options', property: 'option1', desc: 'Important number' },
-            { type: 'String', name: 'options', property: 'option2', desc: '' },
-            { type: 'Array', name: 'options', property: 'stuff', desc: '' }
+            { type: 'Number', name: 'options', property: 'option1', desc: 'Important number', depth: 2 },
+            { type: 'String', name: 'options', property: 'option2', desc: '', depth: 2 },
+            { type: 'Array', name: 'options', property: 'stuff', desc: '', depth: 2 }
           ]
         },
-        items: { type: 'Array', name: 'items', property: false, desc: '' },
-        count: { type: 'Number', name: 'count', property: false, desc: '' },
-        message: { type: 'String', name: 'message', property: false, desc: '' }
+        items: { type: 'Array', name: 'items', property: false, desc: '', depth: 1 },
+        count: { type: 'Number', name: 'count', property: false, desc: '', depth: 1 },
+        message: { type: 'String', name: 'message', property: false, desc: '', depth: 1 }
       });
     });
 
@@ -160,14 +195,15 @@ describe('paramount', function() {
           name: 'options',
           property: false,
           desc: '',
+          depth: 1,
           properties: [
-            { type: 'Unknown', name: 'options', property: 'option1', desc: '' },
-            { type: 'Array', name: 'options', property: 'stuff', desc: '' } 
+            { type: 'Unknown', name: 'options', property: 'option1', desc: '', depth: 2 },
+            { type: 'Array', name: 'options', property: 'stuff', desc: '', depth: 2 } 
           ] 
         },
-        items: { type: 'Array', name: 'items', property: false, desc: '' },
-        count: { type: 'Unknown', name: 'count', property: false, desc: '' },
-        message: { type: 'String', name: 'message', property: false, desc: '' }
+        items: { type: 'Array', name: 'items', property: false, desc: '', depth: 1 },
+        count: { type: 'Unknown', name: 'count', property: false, desc: '', depth: 1 },
+        message: { type: 'String', name: 'message', property: false, desc: '', depth: 1 }
       });
     });
   }); // End describe coalesceParams
@@ -178,25 +214,29 @@ describe('paramount', function() {
         type: 'String',
         name: 'message',
         desc: 'A message for you',
-        property: false
+        property: false,
+        depth: 1
       });
       assert.deepEqual(paramount.parseDocblockParam('{Number} [count]'), {
         type: 'Number',
         name: 'count',
         desc: '',
-        property: false
+        property: false,
+        depth: 1
       });
       assert.deepEqual(paramount.parseDocblockParam('{Number} [options.count]'), {
         type: 'Number',
         name: 'options',
         desc: '',
         property: 'count',
+        depth: 2
       });
       assert.deepEqual(paramount.parseDocblockParam('{Number} [options.count] A lotta stuff  '), {
         type: 'Number',
         name: 'options',
         desc: 'A lotta stuff',
         property: 'count',
+        depth: 2
       });
     });
 
