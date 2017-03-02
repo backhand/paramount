@@ -7,6 +7,24 @@ describe('paramount', function() {
   describe('require', function() {
     const testmodule = paramount.require('./testmodule', module);
 
+    it('should throw an error on requiring a non-existing module', function() {
+      assert.throws(function() {
+        paramount.require('./testmoduleXXX', module);
+      }, /Cannot find module '.\/testmoduleXXX'/);
+    });
+
+    it('should throw an error if filepath is not supplied', function() {
+      assert.throws(function() {
+        paramount.require(null, module);
+      }, /Filepath not defined/);
+    });
+
+    it('should throw an error if module not supplied', function() {
+      assert.throws(function() {
+        paramount.require('./testmodule');
+      }, /Module not defined/);
+    });
+
     it('should require a module file and insert proxies for exported functions', function() {
       const result = testmodule.testmethod1({
         option1: 127,
@@ -27,7 +45,7 @@ describe('paramount', function() {
           option2: 'hejsa',
           stuff: [1,2]
         }, ['a', 'b'], 'notanumberlol', 'hovsa');
-      }, 'function testmethod1 - invalid argument type for count, expected Number');
+      }, /function testmethod1 - invalid argument type for count, expected Integer got notanumberlol/);
     });
 
     it('should throw an error on wrong argument types in sub-argument', function() {
@@ -54,8 +72,47 @@ describe('paramount', function() {
         sum: 1337,
         items: [1, 2, 'a', 'b']
       });
+    });
+
+    it('should work for a single parameter', function() {
+      const result = testmodule.testmethod3('hejsasa');
+      assert.equal(result, 'xhejsasa');
+    });
+
+    it('should throw an error if calling an undefined function', function() {
+      assert.throws(function() {
+        testmodule.testmethodXXX('hejsasa');
+      }, /Method testmethodXXX not defined or not a function/);
+    });
+
+    it('should not attempt validation if no docblock', function() {
+      const result = testmodule.testmethod4('hejsasa');
+      assert.equal(result, 'xhejsasa');
     });    
   }); // End describe require
+
+  describe('setErrorHandler', function() {
+    const testmodule = paramount.require('./testmodule', module);
+
+    it('should throw an error if argument is not a function', function() {
+      assert.throws(function() {
+        paramount.setErrorHandler('notafunction');
+      }, /Error handler must be a function/);
+    });
+
+    it('should set a custom errorhandler and call it on errors', function() {
+      paramount.setErrorHandler((functionName, paramName, expectedType, value, desc) => {
+        throw new Error(`[${functionName}][${paramName}][${expectedType}][${value}][${desc}]`);
+      });
+      assert.throws(function() {
+        testmodule.testmethod1({
+          option1: 'notanumberlol',
+          option2: 'hejsa',
+          stuff: [1,2]
+        }, ['a', 'b'], 1337, 'hovsa');
+      }, /\[testmethod1\]\[options.option1\]\[Number\]\[notanumberlol\]\[\]/);
+    });
+  }); // End describe setErrorHandler
 
   describe('coalesceParams', function() {
     it('should organize properties under their parent parameters', function() {
@@ -66,7 +123,8 @@ describe('paramount', function() {
        '{Array}  [options.stuff]',
        '{Array}  [items]',
        '{Number} [count]',
-       '{String} [message]]'
+       '{String} [message]]',
+       'Blah blah I\'m not a docblock'
       ].map(paramount.parseDocblockParam));
       assert.deepEqual(result, {
         options: {
@@ -140,6 +198,14 @@ describe('paramount', function() {
         desc: 'A lotta stuff',
         property: 'count',
       });
+    });
+
+    it('should return false if no values for type or param name', function() {
+      assert.equal(paramount.parseDocblockParam('{} []'), false);
+    });
+
+    it('should return false if not parseable', function() {
+      assert.equal(paramount.parseDocblockParam('[Number] {options.count} A lotta stuff  '), false);
     });
   }); // End describe parseDocblockParam
 }); // End describe paramount

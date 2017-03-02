@@ -3,16 +3,18 @@
   "description": "DESCRIPTION",
   "version": "0.1.0",
   "author": "Frederik Hannibal <frederik@backhand.dk>",
-   "repository": {
+  "repository": {
     "type": "git",
     "url": "https://github.com/backhand/paramount.git"
   },
   "main": "./lib/paramount",
   "dependencies": {
-    "annotations": "0.1.339"
+    "annotations": "0.1.339",
+    "lodash": "4.17.4"
   },
   "devDependencies": {
-    "lodash": "4.17.4",
+    "codacy-coverage": "2.0.1",
+    "istanbul": "^0.4.5",
     "mocha": "2.3.3",
     "nyc": "10.1.2"
   },
@@ -21,5 +23,7 @@
     "coverage": "node_modules/.bin/nyc --reporter=text --reporter=html npm test"
   },
   "license": "MIT",
-  "engines": { "node": ">=4.0.x" }
+  "engines": {
+    "node": ">=4.0.x"
+  }
 }

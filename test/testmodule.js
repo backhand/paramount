@@ -1,6 +1,8 @@
 
 exports.testmethod1 = testmethod1;
 exports.testmethod2 = testmethod2;
+exports.testmethod3 = testmethod3;
+exports.testmethod4 = testmethod4;
 
 /**
  * Test method 1
@@ -10,7 +12,7 @@ exports.testmethod2 = testmethod2;
  * @param {String} [options.option2]
  * @param {Array}  [options.stuff]
  * @param {Array}  [items]
- * @param {Number} [count]
+ * @param {Integer} [count]
  * @param {String} [message]
  * @returns {String|null}
  */
@@ -45,4 +47,18 @@ function testmethod2(options, items, count) {
     sum: count,
     items: options.stuff.concat(items)
   };
+}
+
+/**
+ * Test method 3 - single param
+ *
+ * @param {String} [message]
+ * @returns {String|null}
+ */
+function testmethod3(message) {
+  return 'x' + message;
+}
+
+function testmethod4(message) {
+  return 'x' + message;
 }
