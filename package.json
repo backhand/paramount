@@ -1,7 +1,7 @@
 {
   "name": "paramount",
   "description": "Argument verification from docblock parameter definitions",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Frederik Hannibal <frederik@backhand.dk>",
   "repository": {
     "type": "git",

@@ -1,3 +1,4 @@
+exports.testobject  = { string: 'hello' };
 exports.testmethod1 = testmethod1;
 exports.testmethod2 = testmethod2;
 exports.testmethod3 = testmethod3;
@@ -97,4 +98,3 @@ function testmethod6(options) {
 function testmethod7(msg) {
   return msg.length;
 }
-

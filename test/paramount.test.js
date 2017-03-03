@@ -85,10 +85,15 @@ describe('paramount', function() {
       assert.equal(result, 'xhejsasa');
     });
 
-    it('should throw an error if calling an undefined function', function() {
+    it('should get a module property', function() {
+      assert.ok(testmodule.testobject);
+      assert.equal(testmodule.testobject.string, 'hello');
+    });
+
+    it('should throw a type error if calling an undefined function', function() {
       assert.throws(function() {
         testmodule.testmethodXXX('hejsasa');
-      }, /Method testmethodXXX not defined or not a function/);
+      }, /TypeError: testmodule.testmethodXXX is not a function/);
     });
 
     it('should not attempt validation if no docblock', function() {
