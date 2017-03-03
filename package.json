@@ -1,7 +1,7 @@
 {
   "name": "paramount",
-  "description": "DESCRIPTION",
-  "version": "1.0.1",
+  "description": "Argument verification from docblock parameter definitions",
+  "version": "1.0.2",
   "author": "Frederik Hannibal <frederik@backhand.dk>",
   "repository": {
     "type": "git",
@@ -9,7 +9,7 @@
   },
   "main": "./lib/paramount",
   "dependencies": {
-    "annotations": "0.1.339",
+    "annotations": "0.1.340",
     "lodash": "4.17.4"
   },
   "devDependencies": {
