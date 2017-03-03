@@ -2,6 +2,7 @@
 
 const paramount = require('../lib/paramount');
 const assert = require('assert');
+const path = require('path');
 
 describe('paramount', function() {
   describe('require', function() {
@@ -11,6 +12,11 @@ describe('paramount', function() {
       assert.throws(function() {
         paramount.require('./testmoduleXXX', module);
       }, /Cannot find module '.\/testmoduleXXX'/);
+    });
+
+    it('should require a module by absolute path', function() {
+      const testmoduleX = paramount.require(path.join(__dirname, 'testmodule'), module);
+      assert.ok(testmoduleX.testmethod1);
     });
 
     it('should throw an error if filepath is not supplied', function() {
